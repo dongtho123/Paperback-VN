@@ -19,7 +19,6 @@ import {
 } from "paperback-extensions-common";
 import { parseSearch, parseViewMore, isLastPage } from "./HentaiCubeParser";
 
-const DOMAIN = 'https://hentaicube.net/';
 const method = 'GET';
 
 export const HentaiCubeInfo: SourceInfo = {
