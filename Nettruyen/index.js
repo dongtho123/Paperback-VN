@@ -741,7 +741,11 @@ const Main_1 = require("../Main");
 const NettruyenAuth_1 = require("./NettruyenAuth");
 const tags_json_1 = __importDefault(require("./tags.json"));
 const HOST = 'NetTruyen';
+<<<<<<< HEAD
 const Domain = 'www.nettruyenus.com';
+=======
+const Domain = 'www.nettruyenup.vn';
+>>>>>>> 3006d0b (five commit)
 exports.NettruyenInfo = {
     description: '',
     icon: 'icon.jpg',
@@ -749,7 +753,11 @@ exports.NettruyenInfo = {
     version: (0, Main_1.getExportVersion)('0.3.6'),
     name: 'Nettruyen',
     language: 'vi',
+<<<<<<< HEAD
     author: 'JustaTama',
+=======
+    author: 'dongtho123',
+>>>>>>> 3006d0b (five commit)
     contentRating: types_1.ContentRating.EVERYONE,
     sourceTags: [
         {
