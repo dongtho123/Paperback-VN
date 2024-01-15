@@ -20,7 +20,7 @@ export const HentaiVNInfo: SourceInfo = {
     version: getExportVersion('0.0.4'),
     name: 'HentaiVN',
     language: 'vi',
-    author: 'JustaTama',
+    author: 'dongtho123',
     contentRating: ContentRating.ADULT,
     sourceTags: [
         {

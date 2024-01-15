@@ -19,7 +19,7 @@ export const LxMangaInfo: SourceInfo = {
     version: getExportVersion('0.0.2'),
     name: ' LxManga',
     language: 'vi',
-    author: 'JustaTama',
+    author: 'dongtho123',
     contentRating: ContentRating.ADULT,
     sourceTags: [
         {

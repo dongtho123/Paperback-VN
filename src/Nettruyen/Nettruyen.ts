@@ -33,7 +33,7 @@ import {
 import tags from './tags.json'
 
 const HOST = 'NetTruyen'
-const Domain = 'www.nettruyenus.com'
+const Domain = 'www.nettruyenup.vn'
 
 export const NettruyenInfo: SourceInfo = {
     description: '',
@@ -42,7 +42,7 @@ export const NettruyenInfo: SourceInfo = {
     version: getExportVersion('0.3.6'),
     name: 'Nettruyen',
     language: 'vi',
-    author: 'JustaTama',
+    author: 'dongtho123',
     contentRating: ContentRating.EVERYONE,
     sourceTags: [
         {
