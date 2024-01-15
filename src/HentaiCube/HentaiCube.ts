@@ -26,6 +26,7 @@ export const HentaiCubeInfo: SourceInfo = {
     name: 'HentaiCube',
     icon: 'icon.png',
     author: 'dongtho123',
+    authorWebsite: 'https://github.com/dongtho123',
     description: 'Extension that pulls manga from HentaiCube',
     websiteBaseURL: `https://hentaicube.net/`,
     contentRating: ContentRating.ADULT,
@@ -48,7 +49,7 @@ export class HentaiCube extends Source {
                 request.headers = {
                     ...(request.headers ?? {}),
                     ...{
-                        'referer': DOMAIN
+                        'referer': 'https://hentaicube.net/'
                     }
                 };
 
@@ -66,38 +67,20 @@ export class HentaiCube extends Source {
         const request = createRequestObject({
             url: url,
             method: "GET",
-        });
-        const data = await this.requestManager.schedule(request, 1);
+         });
+        let data = await this.requestManager.schedule(request, 1);
         let $ = this.cheerio.load(data.data);
         let tags: Tag[] = [];
-        let creator = '';
-        let status = 1; //completed, 1 = Ongoing
-        let desc = '';
-        $('.description-summary > .summary__content ul li').toArray().map((item: any) => {
-            desc += '●  ' + $(item).text() + '\n';
-        });
-
-        for (const test of $('.post-content_item', '.post-content').toArray()) {
-            switch ($('.summary-heading > h5', test).text().trim()) {
-                case 'Tác giả':
-                    creator = $('.author-content', test).text();
-                    break;
-                case 'Thể loại':
-                    for (const t of $('.genres-content > a', test).toArray()) {
-                        const genre = $(t).text().trim();
-                        const id = $(t).attr('href') ?? genre;
-                        tags.push(createTag({ label: genre, id }));
-                    }
-                    break;
-                case 'Tình trạng':
-                    status = $('.summary-content', test).text().trim().toLowerCase().includes("đang") ? 1 : 0;
-                    break;
-                default:
-                    break;
-            }
+        let creator = $('.author > i > a').text().trim();
+        let status = $('.tsinfo  > .imptdt:first-child > i').text().trim(); //completed, 1 = Ongoing
+        let statusFinal = status.toLowerCase().includes("đang") ? 1 : 0;
+        let desc = $(".comic-description > .inner").text().trim();
+        for (const t of $('.genre > a').toArray()) {
+            const genre = $(t).text().trim();
+            const id = $(t).attr('href') ?? genre;
+            tags.push(createTag({ label: genre, id }));
         }
-        const image = $('.tab-summary img').attr('src')?.replace('-193x278', '') ?? "";
-
+        const image = $('.comic-info .book > img').attr('src') ?? "";
         return createManga({
             id: mangaId,
             author: creator,
@@ -117,21 +100,24 @@ export class HentaiCube extends Source {
             url: `${mangaId}`,
             method,
         });
-        const response = await this.requestManager.schedule(request, 1);
-        const $ = this.cheerio.load(response.data);
+        let data = await this.requestManager.schedule(request, 1);
+        let $ = this.cheerio.load(data.data);
         const chapters: Chapter[] = [];
         var i = 0;
-        for (const obj of $(".listing-chapters_wrap li").toArray().reverse()) {
+        for (const obj of $('.bixbox > .chap-list > .d-flex ').toArray().reverse()) {
             i++;
-            const getTime = $('span', obj).text().trim();
-            let timeFinal = convertTime(getTime);
+            let id = $('a', obj).first().attr('href');
+            let name = $('a > span:first-child', obj).text().trim();
+            let cc = $('a > span:first-child', obj).text().trim();
+            let chapNum = Number(cc.includes('Chapter') ? cc.split('Chapter')[1].trim() : 'cc');
+            let time = $('a > span:last-child', obj).text().trim().split('/');
             chapters.push(createChapter(<Chapter>{
-                id: $('a', obj).first().attr('href'),
-                chapNum: i,
-                name: ($('a', obj).first().text().trim()),
+                id,
+                chapNum: isNaN(chapNum) ? i : chapNum,
+                name,
                 mangaId: mangaId,
                 langCode: LanguageCode.VIETNAMESE,
-                time: timeFinal
+                time: new Date(time[1] + '/' + time[0] + '/' + time[2])
             }));
         }
 
@@ -143,20 +129,13 @@ export class HentaiCube extends Source {
             url: `${chapterId}`,
             method
         });
-
-        const response = await this.requestManager.schedule(request, 1);
-        let $ = this.cheerio.load(response.data);
+  let data = await this.requestManager.schedule(request, 1);
+        let $ = this.cheerio.load(data.data);
         const pages: string[] = [];
-        let link;
-        for (let obj of $('.text-left > div > img').toArray()) {
-            if (!obj.attribs['data-src']) {
-                link = obj.attribs['src'].trim();
-            } else {
-                link = obj.attribs['data-src'].trim();
-            };
+        for (let obj of $('.content-text img').toArray()) {
+            let link = $(obj).attr('src') ?? "";
             pages.push(encodeURI(link));
         }
-
         const chapterDetails = createChapterDetails({
             id: chapterId,
             mangaId: mangaId,
@@ -208,7 +187,6 @@ export class HentaiCube extends Source {
 
         ///Get the section data
         //Featured
-        let url = ``;
         let request = createRequestObject({
             url: 'https://hentaicube.net/',
             method: "GET",
@@ -236,8 +214,7 @@ export class HentaiCube extends Source {
         sectionCallback(featured);
 
         //top
-        url = '';
-        request = createRequestObject({
+        let request = createRequestObject({
             url: 'https://hentaicube.net/',
             method: "GET",
         });
@@ -260,8 +237,7 @@ export class HentaiCube extends Source {
         sectionCallback(top);
 
         //Hot
-        url = '';
-        request = createRequestObject({
+        let request = createRequestObject({
             url: 'https://hentaicube.net/',
             method: "GET",
         });
@@ -284,9 +260,8 @@ export class HentaiCube extends Source {
         sectionCallback(hot);
 
         //New Updates
-        url = '';
-        request = createRequestObject({
-            url: 'https://hentaicube.net/?s&post_type=wp-manga&m_orderby=latest',
+        let request = createRequestObject({
+            url: 'https://hentaicube.net/',
             method: "GET",
         });
         let newUpdatedItems: MangaTile[] = [];
@@ -312,9 +287,8 @@ export class HentaiCube extends Source {
         sectionCallback(newUpdated);
 
         //view
-        url = DOMAIN;
-        request = createRequestObject({
-            url: 'https://hentaicube.net/?s&post_type=wp-manga&m_orderby=views',
+         let request = createRequestObject({
+            url: 'https://hentaicube.net/',
             method: "GET",
         });
         let newAddItems: MangaTile[] = [];
@@ -340,9 +314,8 @@ export class HentaiCube extends Source {
         sectionCallback(view);
 
         //Newest
-        url = '';
-        request = createRequestObject({
-            url: 'https://hentaicube.net/?s&post_type=wp-manga&m_orderby=new-manga',
+         let request = createRequestObject({
+            url: 'https://hentaicube.net/',
             method: "GET",
         });
         let newItems: MangaTile[] = [];
@@ -371,22 +344,18 @@ export class HentaiCube extends Source {
     async getViewMoreItems(homepageSectionId: string, metadata: any): Promise<PagedResults> {
         let page: number = metadata?.page ?? 1;
         let url = '';
-        let url2 = '';
         let select = 1;
         switch (homepageSectionId) {
             case "new":
                 url = `https://hentaicube.net/page/${page}/?s&post_type=wp-manga&m_orderby=new-manga`;
-                url2 = `https://hentaicube.net/page/${page + 1}/?s&post_type=wp-manga&m_orderby=new-manga`;
                 select = 0;
                 break;
             case "new_updated":
                 url = `https://hentaicube.net/${page}/?s&post_type=wp-manga&m_orderby=latest`;
-                url2 = `https://hentaicube.net/page/${page + 1}/?s&post_type=wp-manga&m_orderby=latest`;
                 select = 1;
                 break;
             case "view":
                 url = `https://hentaicube.net/page/${page}/?s&post_type=wp-manga&m_orderby=views`;
-                url2 = `https://hentaicube.net/page/${page + 1}/?s&post_type=wp-manga&m_orderby=views`;
                 select = 2;
                 break;
             default:
@@ -404,187 +373,55 @@ export class HentaiCube extends Source {
             method
         });
 
-        const response = await this.requestManager.schedule(request, 1);
-        const response2 = await this.requestManager.schedule(request2, 1);
-        const $ = this.cheerio.load(response.data);
-        const $2 = this.cheerio.load(response2.data);
-        let manga = parseViewMore($, select);
-        let manga2 = parseViewMore($2, select);
-        metadata = !isLastPage($) ? { page: page + 2 } : undefined;
+        let data = await this.requestManager.schedule(request, 1);
+        let $ = this.cheerio.load(data.data);
+        let manga = parseViewMore($);
+        metadata = !isLastPage($) ? { page: page + 1 } : undefined;
         return createPagedResults({
-            results: manga.concat(manga2),
+            results: manga,
             metadata,
         });
     }
 
-    async getSearchResults(query: SearchRequest, metadata: any): Promise<PagedResults> {
+   async getSearchResults(query: SearchRequest, metadata: any): Promise<PagedResults> {
         let page = metadata?.page ?? 1;
         const tags = query.includedTags?.map(tag => tag.id) ?? [];
-        var status: any[] = [];
-        var year: any[] = [];
-        var sort: any[] = [];
-        var genre: any[] = [];
-        tags.map((value) => {
-            if (value.indexOf('.') === -1) {
-                genre.push(value);
-            } else {
-                switch (value.split(".")[0]) {
-                    case 'status':
-                        status.push(value.split(".")[1]);
-                        break;
-                    case 'year':
-                        year.push(value.split("year.")[1]);
-                        break;
-                    case 'sort':
-                        sort.push(value.split("&")[2]);
-                        break;
-                }
-            }
-        });
-        var statusFinal = '';
-        var genresFinal = '';
-        const convertStatus = (status: any[]) => {///status=['canceled','on-going'] => status=canceled&status=on-going
-            let y = [];
-            for (const e of status) {
-                let x = 'status=' + e;
-                y.push(x);
-            }
-            statusFinal = (y ?? []).join("&");
-            return statusFinal;
-        };
-        const convertGenres = (genre: any[]) => {///genre=['ahegao','anal'] => genre=ahegao&genre=anal
-            let y = [];
-            for (const e of genre) {
-                let x = 'genre=' + e;
-                y.push(x);
-            }
-            genresFinal = (y ?? []).join("&");
-            return genresFinal;
-        };
-        var url = '';
-        var set = 1;
-        //search chưa ngon lắm :))
-        if (year.length !== 0) { //year + sort
-            if (tags[0].split('.')[0] === 'year' || tags[0].split('.')[0] === 'sort') {
-                if (year.length !== 0 && sort.length !== 0) {
-                    set = 0;
-                    url = encodeURI(`${year[0]}page/${page}/?${sort[0]}`);
-                } else {
-                    if (tags[0].split('.')[0] === 'year') {
-                        set = 0;
-                        url = encodeURI(`${year[0]}page/${page}/`);
-                    } else {
-                        set = 1;
-                        url = encodeURI(`https://hentaicube.net/page/${page}/?s&post_type=wp-manga&${sort[0]}`);
-                    }
-                }
-            }
-        } else { //keyword + genre + status + sort
-            set = 1;
-            url = encodeURI(`https://hentaicube.net/page/${page}/?s=${query.title ?? ""}&post_type=wp-manga&${convertGenres(genre)}&op=&author=&artist=&release=&adult=&${convertStatus(status)}&${sort[0]}`);
-        }
         const request = createRequestObject({
-            url,
-            method: "GET"
+            url: query.title ? encodeURI(`https://hentaicube.net/page/${page}/?s=${query.title}`) : 
+       tags[0] + `page/${page}/`,
+            method: "GET",
         });
 
-        url = url.replace(`page/${page}/`, `page/${page + 1}/`);
-        const request2 = createRequestObject({
-            url,
-            method: "GET"
-        });
-
-        const data = await this.requestManager.schedule(request, 1);
-        const data2 = await this.requestManager.schedule(request2, 1);
+        let data = await this.requestManager.schedule(request, 1);
         let $ = this.cheerio.load(data.data);
-        let $2 = this.cheerio.load(data2.data);
-        const tiles = parseSearch($, set);
-        const tiles2 = parseSearch($2, set);
+        const tiles = parseSearch($);
 
-        metadata = !isLastPage($) ? { page: page + 2 } : undefined;
+        metadata = { page: page + 1 };
 
         return createPagedResults({
-            results: tiles.concat(tiles2),
+            results: tiles,
             metadata
         });
     }
 
     async getSearchTags(): Promise<TagSection[]> {
         const tags: Tag[] = [];
-        const tags2: Tag[] = [];
-        const tags3: Tag[] = [];
-        const tags4: Tag[] = [];
-
-        const counts = [];
-
-        let url = `https://hentaicube.net/?s=&post_type=wp-manga`;
-        let request = createRequestObject({
+        const url = `https://hentaicube.net/`;
+        const request = createRequestObject({
             url: url,
             method: "GET",
         });
-        let response = await this.requestManager.schedule(request, 1);
-        let $ = this.cheerio.load(response.data);
-
-        let url2 = `https://hentaicube.net/manga/`;
-        let request2 = createRequestObject({
-            url: url2,
-            method: "GET",
-        });
-        let response2 = await this.requestManager.schedule(request2, 1);
-        let $2 = this.cheerio.load(response2.data);
-        for (const cc of $2('a', '.list-unstyled').toArray()) {
-            const count = $2('.count', cc).text();
-            counts.push(count);
-        }
-
+        let data = await this.requestManager.schedule(request, 1);
+        let $ = this.cheerio.load(data.data);
         //the loai
-        var i = 0;
-        for (const tag of $('.checkbox', '.checkbox-group').toArray()) {
-            const label = $('label', tag).text().trim() + counts[i];
-            const id = $('input', tag).attr('id') ?? label;
+        for (const tag of $('.genre a').toArray()) {
+            const label = $(tag).text().trim();
+            const id = $(tag).attr('href');
             if (!id || !label) continue;
             tags.push({ id: id, label: label });
-            i++;
         }
-
-        //tinh trang
-        for (const tag of $('.checkbox-inline', '.search-advanced-form > .form-group:nth-child(9) ').toArray()) {
-            const label = $('label', tag).text().trim();
-            const id = 'status.' + $('input', tag).attr('value') ?? label;
-            if (!id || !label) continue;
-            tags2.push({ id: id, label: label });
-        }
-
-        //sap xep
-        for (const tag of $('li', '.c-tabs-content').toArray()) {
-            const label = $('a', tag).text().trim();
-            const id = 'sort.' + $('a', tag).attr('href') ?? label;
-            if (!id || !label) continue;
-            tags4.push({ id: id, label: label });
-        }
-
-        url = `https://hentaicube.net/manga/`;
-        request = createRequestObject({
-            url: url,
-            method: "GET",
-        });
-        response = await this.requestManager.schedule(request, 1);
-        $ = this.cheerio.load(response.data);
-
-        //nam
-        for (const tag of $('li', '#wp_manga_release_id-2 .c-released_content .list-released').toArray()) {
-            for (const tag2 of $('a', tag).toArray()) {
-                const label = $(tag2).text().trim();
-                const id = 'year.' + $(tag2).attr('href') ?? label;
-                if (!id || !label) continue;
-                tags3.push({ id: id, label: label });
-            }
-        }
-
-        const tagSections: TagSection[] = [createTagSection({ id: '0', label: 'Thể Loại', tags: tags.map(x => createTag(x)) }),
-        createTagSection({ id: '1', label: 'Tình Trạng', tags: tags2.map(x => createTag(x)) }),
-        // createTagSection({ id: '2', label: 'Năm', tags: tags3.map(x => createTag(x)) }),
-        createTagSection({ id: '3', label: 'Xếp theo', tags: tags4.map(x => createTag(x)) })
+        const tagSections: TagSection[] = [
+            createTagSection({ id: '1', label: 'Thể Loại', tags: tags.map(x => createTag(x)) }),
         ];
         return tagSections;
     }
