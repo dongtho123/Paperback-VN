@@ -17,7 +17,7 @@ import {
     LanguageCode,
     HomeSectionType
 } from "paperback-extensions-common";
-import { parseSearch, isLastPage, parseViewMore, convertTime, decodeHTMLEntity } from "./HentaiCubeParser";
+import { parseSearch, parseViewMore, isLastPage } from "./HentaiCubeParser";
 
 const DOMAIN = 'https://hentaicube.net/';
 const method = 'GET';
@@ -26,10 +26,9 @@ export const HentaiCubeInfo: SourceInfo = {
     version: '2.7.1',
     name: 'HentaiCube',
     icon: 'icon.png',
-    language: 'vi',
     author: 'dongtho123',
     description: 'Extension that pulls manga from HentaiCube',
-    websiteBaseURL: DOMAIN,
+    websiteBaseURL: `https://hentaicube.net/`,
     contentRating: ContentRating.ADULT,
     sourceTags: [
         {
