@@ -741,7 +741,7 @@ const Main_1 = require("../Main");
 const NettruyenAuth_1 = require("./NettruyenAuth");
 const tags_json_1 = __importDefault(require("./tags.json"));
 const HOST = 'NetTruyen';
-const Domain = 'www.nettruyenus.com';
+const Domain = 'www.nettruyenclub.com';
 exports.NettruyenInfo = {
     description: '',
     icon: 'icon.jpg',
@@ -749,7 +749,7 @@ exports.NettruyenInfo = {
     version: (0, Main_1.getExportVersion)('0.3.6'),
     name: 'Nettruyen',
     language: 'vi',
-    author: 'JustaTama',
+    author: 'dongtho123',
     contentRating: types_1.ContentRating.EVERYONE,
     sourceTags: [
         {
