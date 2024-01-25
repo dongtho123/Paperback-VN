@@ -19,7 +19,7 @@ Khi nhấn vào sẽ tự chuyển tiếp qua ứng dụng Paperback.
 |   5   | HentaiVip                 | https://hentaivnmoi.net        
 |   6   | HentaiVN                  | https://hentaivn.tv                        |
 |   7   | LxManga                   | https://lxmanga.net                        |
-|   8   | Nettruyen                 | https://www.nettruyenus.com                |
+|   8   | Nettruyen                 | https://www.nettruyenclub.com                |
 |   9   | Nhattruyen                | https://nhattruyenplus.com                 |
 |   10  | SayHentai                 | https://sayhentai.fun                     |
 |   11  | TruyentranhLH             | https://truyentranhlh.net                  |
