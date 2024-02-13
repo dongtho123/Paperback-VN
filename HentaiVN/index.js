@@ -485,13 +485,13 @@ exports.HentaiVNInfo = {
     ],
     intents: types_1.SourceIntents.HOMEPAGE_SECTIONS | types_1.SourceIntents.MANGA_CHAPTERS
 };
-const Domain = 'hentaivn.tv';
+const Domain = 'hentaivn.lat';
 class HentaiVN extends Main_1.Main {
     constructor() {
         super(...arguments);
         this.Host = HOST;
         this.Tags = tags_json_1.default;
-        this.HostDomain = `https://${Domain}.tv/`;
+        this.HostDomain = `https://${Domain}.lat/`;
         this.UseId = true;
         this.SearchWithGenres = true;
         this.SearchWithNotGenres = false;
