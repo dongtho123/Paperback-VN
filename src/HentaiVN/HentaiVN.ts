@@ -37,7 +37,7 @@ export class HentaiVN extends Main {
     Host = HOST
     Tags = tags
 
-    HostDomain = `https://${Domain}.tv/`
+    HostDomain = `https://${Domain}.lat/`
     UseId = true
     
     SearchWithGenres = true
