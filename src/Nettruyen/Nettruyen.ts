@@ -33,7 +33,7 @@ import {
 import tags from './tags.json'
 
 const HOST = 'NetTruyen'
-const Domain = 'www.nettruyenco.vn'
+const Domain = 'https://nettruyenco.vn/'
 
 export const NettruyenInfo: SourceInfo = {
     description: '',
