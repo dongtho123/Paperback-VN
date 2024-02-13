@@ -741,7 +741,7 @@ const Main_1 = require("../Main");
 const NettruyenAuth_1 = require("./NettruyenAuth");
 const tags_json_1 = __importDefault(require("./tags.json"));
 const HOST = 'NetTruyen';
-const Domain = 'www.nettruyenclub.com';
+const Domain = 'https://nettruyenco.vn/';
 exports.NettruyenInfo = {
     description: '',
     icon: 'icon.jpg',
