@@ -31,7 +31,7 @@ export const HentaiVNInfo: SourceInfo = {
     intents: SourceIntents.HOMEPAGE_SECTIONS | SourceIntents.MANGA_CHAPTERS
 }
 
-const Domain = 'hentaivn.tv'
+const Domain = 'hentaivn.lat'
 
 export class HentaiVN extends Main {
     Host = HOST
