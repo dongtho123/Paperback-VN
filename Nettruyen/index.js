@@ -742,9 +742,9 @@ const NettruyenAuth_1 = require("./NettruyenAuth");
 const tags_json_1 = __importDefault(require("./tags.json"));
 const HOST = 'NetTruyen';
 <<<<<<< HEAD
-const Domain = 'www.nettruyenco.vn';
+const Domain = 'https://nettruyenco.vn/';
 =======
-const Domain = 'www.nettruyenco.vn';
+const Domain = 'https://nettruyenco.vn/';
 >>>>>>> 3006d0b (five commit)
 exports.NettruyenInfo = {
     description: '',
