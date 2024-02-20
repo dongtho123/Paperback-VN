@@ -467,16 +467,18 @@ exports.HentaiVN = exports.HentaiVNInfo = void 0;
 const types_1 = require("@paperback/types");
 const Main_1 = require("../Main");
 const HOST = 'HentaiVN';
+const Domain = 'https://hentaivn.tv';
+const method = 'GET';
 const tags_json_1 = __importDefault(require("./tags.json"));
 exports.HentaiVNInfo = {
-    description: '',
-    icon: 'icon.png',
-    websiteBaseURL: '',
-    version: (0, Main_1.getExportVersion)('0.0.4'),
-    name: 'HentaiVN',
-    language: 'vi',
-    author: 'Hoang3409',
-    contentRating: types_1.ContentRating.ADULT,
+    version: '0.0.4',
+        name: 'HentaiVn',
+        icon: 'icon.png',
+        author: 'dongtho123',
+        authorWebsite: 'https://github.com/dongtho123',
+        description: 'Extension that pulls manga from HentaiVn',
+        websiteBaseURL: `https://blogtruyen.vn`,
+        contentRating: types_1.ContentRating.MATURE,
     sourceTags: [
         {
             text: '18+',
@@ -485,7 +487,6 @@ exports.HentaiVNInfo = {
     ],
     intents: types_1.SourceIntents.HOMEPAGE_SECTIONS | types_1.SourceIntents.MANGA_CHAPTERS
 };
-const Domain = 'https://hentaivn.tv/';
 class HentaiVN extends Main_1.Main {
     constructor() {
         super(...arguments);
