@@ -470,7 +470,7 @@ const Domain = 'https://hentaivn.tv/';
 const method = 'GET';
 const tags_json_1 = __importDefault(require("./tags.json"));
 exports.HentaiVNInfo = {
-    version: '2.7.1',
+    version: '0.0.4',
     name: 'HentaiVn',
     icon: 'icon.png',
     language: 'vi',
