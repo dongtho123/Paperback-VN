@@ -745,7 +745,7 @@ const Domain = 'https://nettruyenco.vn/';
 exports.NettruyenInfo = {
     description: '',
     icon: 'icon.jpg',
-    websiteBaseURL: '',
+    websiteBaseURL: 'https://nettruyenco.vn/',
     version: (0, Main_1.getExportVersion)('0.3.6'),
     name: 'Nettruyen',
     language: 'vi',
